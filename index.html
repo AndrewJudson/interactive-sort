@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <p> Input each item on a new line, and click the Start button to begin. </p>
+    <h3> Input </h3>
+    <textarea id="input_area"> </textarea>
+    <br>
+    <button type="button" onclick="start()">Start</button>
+    <br>
+    <h3> Compare </h3>
+    <textarea id="left_cmp"> </textarea>
+    <textarea id="right_cmp"> </textarea>
+    <button id="left_button" type="button">Left</button>
+    <button id="right_button" type="button">Right</button>    
+    <br>
+    <h3> Output </h3>
+    <textarea id="output_area"> </textarea>
+    <script>
+      var side = null;
+
+      function left() {
+          console.log("clicking left")
+          side = 0;
+      }
+
+      function right() {
+          console.log("clicking right")
+          side = 1;
+      }
+
+      document.getElementById("left_button").addEventListener("click", left)
+      document.getElementById("right_button").addEventListener("click", right)
+
+      function start() {
+          var input = document.getElementById("input_area").value;
+          var input_list = input.split("\n");
+          var sorted = merge_sort(input_list);
+          console.log(sorted)
+          var formatted_output = sorted.join("\n");
+          document.getElementById("output_area").value = formatted_output;
+      }
+
+      function cmp(em1, em2) {
+          document.getElementById("left_cmp").value = em1;
+          document.getElementById("right_cmp").value = em2;
+          var result = null;
+          /*
+          while(side === null) {
+              await delay(5000);
+          }
+          if (side == 0) {
+              result = 0;
+          } else {
+              result = 1;
+          }
+          side = null; */
+          rank = 0;
+          return rank;
+      }
+
+      function merge_sort(input_list) {
+          // return sorted list of the input
+          console.log("Input list is:")
+          console.log(input_list)
+          if (input_list.length <= 1) {
+              return input_list;
+          }
+
+          var middle = Math.floor(input_list.length / 2);
+
+          var left = input_list.slice(0, middle);
+          var right = input_list.slice(middle);
+
+          return merge(merge_sort(left), merge_sort(right));
+      }
+
+      function merge(left, right) {
+          console.log("Left:")
+          console.log(left)
+          console.log("Right:")
+          console.log(right)
+          i = 0;
+          j = 0;
+          result = []
+          while (i < left.length && j < right.length) {
+              cur_left = left[i];
+              console.log("cur_left:")
+              console.log(cur_left)
+              cur_right = right[j];
+              console.log("cur_right:")
+              console.log(cur_right)
+              var cmp_result = cmp(cur_left, cur_right);
+              if (!cmp_result) {
+                  result.push(cur_left)
+                  i++;
+              } else {
+                  result.push(cur_right)
+                  j++;
+              }
+          }
+          return result.concat(left.slice(i)).concat(right.slice(j));
+      }
+
+      function get_side() {
+          return side;
+      }
+    </script>
+  </body>
+</html>
+
