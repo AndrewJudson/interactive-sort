@@ -3,7 +3,7 @@
   <head>
   </head>
   <body>
-    <p> Input each item on a new line, and click the Start button to begin. </p>
+    <p> Input each item on a new line, and click the Start button to begin. If you make a mistake, refresh the page and try again.</p>
     <h3> Input </h3>
     <textarea id="input_area"> </textarea>
     <br>
@@ -19,6 +19,14 @@
     <textarea id="output_area"> </textarea>
     <script>
       var side = null;
+      // Clear text boxes on reset
+      document.getElementById('output_area').value='';
+      document.getElementById('left_cmp').value='';
+      document.getElementById('right_cmp').value='';
+
+      function timeout(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
       function left() {
           console.log("clicking left")
@@ -33,35 +41,32 @@
       document.getElementById("left_button").addEventListener("click", left)
       document.getElementById("right_button").addEventListener("click", right)
 
-      function start() {
-          var input = document.getElementById("input_area").value;
+      async function start() {
+          // Strip the end of the input
+          var input = document.getElementById("input_area").value.replace(/^\s+|\s+$/g, "");
           var input_list = input.split("\n");
-          var sorted = merge_sort(input_list);
+          var sorted = await merge_sort(input_list);
           console.log(sorted)
           var formatted_output = sorted.join("\n");
           document.getElementById("output_area").value = formatted_output;
       }
 
-      function cmp(em1, em2) {
+      async function cmp(em1, em2) {
           document.getElementById("left_cmp").value = em1;
           document.getElementById("right_cmp").value = em2;
-          var result = null;
-          /*
-          while(side === null) {
-              await delay(5000);
-          }
+          var rank = null;
+          while (side === null) await timeout(10);
           if (side == 0) {
-              result = 0;
+              rank = 0;
           } else {
-              result = 1;
+              rank = 1;
           }
-          side = null; */
-          rank = 0;
+          // Reset global variable tracking button press
+          side = null;
           return rank;
       }
 
-      function merge_sort(input_list) {
-          // return sorted list of the input
+      async function merge_sort(input_list) {
           console.log("Input list is:")
           console.log(input_list)
           if (input_list.length <= 1) {
@@ -73,10 +78,10 @@
           var left = input_list.slice(0, middle);
           var right = input_list.slice(middle);
 
-          return merge(merge_sort(left), merge_sort(right));
+          return await merge(await merge_sort(left), await merge_sort(right));
       }
 
-      function merge(left, right) {
+      async function merge(left, right) {
           console.log("Left:")
           console.log(left)
           console.log("Right:")
@@ -91,7 +96,7 @@
               cur_right = right[j];
               console.log("cur_right:")
               console.log(cur_right)
-              var cmp_result = cmp(cur_left, cur_right);
+              var cmp_result = await cmp(cur_left, cur_right);
               if (!cmp_result) {
                   result.push(cur_left)
                   i++;
@@ -102,11 +107,6 @@
           }
           return result.concat(left.slice(i)).concat(right.slice(j));
       }
-
-      function get_side() {
-          return side;
-      }
     </script>
   </body>
 </html>
-
